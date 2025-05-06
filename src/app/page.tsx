@@ -182,89 +182,170 @@ const ProjectsWithTestimonials = ({ theme }: { theme: ThemeColors }) => {
   // Get the current project
   const currentProject = projects[currentIndex];
 
-  return (
-    <div className="max-w-5xl mx-auto">
-      <div className="grid lg:grid-cols-5 gap-8 items-center">
-        {/* Project Display (3 columns) */}
-        <motion.div 
-          className="lg:col-span-3 relative"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isAnimating ? 0 : 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className={`relative ${theme.bg.card} rounded-xl overflow-hidden shadow-lg group border border-indigo-100 hover:border-indigo-300 transition-colors duration-300`}>
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-            <div className="overflow-hidden">
-              <motion.div 
-                whileHover={{ scale: 1.05 }} 
-                transition={{ duration: 0.4 }}
-              >
-                <Image 
-                  src={currentProject.image} 
-                  alt={currentProject.title} 
-                  width={600}
-                  height={400}
-                  className="w-full h-60 md:h-72 object-cover"
-                />
-              </motion.div>
+  // Mac device frame component
+  const MacFrame = ({ image, title }: { image: string; title: string }) => (
+    <div className="relative w-full mx-auto transform transition-transform duration-500">
+      {/* Shadow and reflection effects */}
+      <div className="absolute -bottom-8 inset-x-8 h-14 bg-black/15 blur-xl rounded-full"></div>
+      
+      {/* Mac frame */}
+      <div className="relative bg-gray-800 rounded-xl overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.25)] border border-gray-700">
+        {/* Top bar with camera */}
+        <div className="bg-gray-900 h-7 md:h-8 flex items-center px-3 relative">
+          <div className="absolute left-3 flex space-x-1.5">
+            <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-red-500 flex items-center justify-center">
+              <div className="w-1.5 h-0.5 bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-2xl font-bold">{currentProject.title}</h3>
-                <div className="flex space-x-2">
-                  {projects.map((_, index) => (
-                    <button 
-                      key={index} 
-                      onClick={() => handleDotClick(index)}
-                      className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                        index === currentIndex ? 'bg-indigo-600' : 'bg-gray-300'
-                      }`}
-                      aria-label={`View project ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className={`${theme.text.secondary} mb-4`}>{currentProject.description}</p>
-              <motion.a 
-                href="#" 
-                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-blue-500 font-medium"
-                whileHover={{ scale: 1.05, x: 5 }}
-                transition={{ duration: 0.2 }}
-              >
-                View Case Study →
-              </motion.a>
+            <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-yellow-500 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-yellow-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </div>
+            <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-green-500 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-green-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
             </div>
           </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-gray-700"></div>
+        </div>
+        
+        {/* Screen with inner shadow */}
+        <div className="relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent z-10 pointer-events-none"></div>
+          <Image 
+            src={image}
+            alt={title}
+            width={1200}
+            height={750}
+            className="w-full object-cover aspect-[16/10] transition-transform duration-500 group-hover:scale-[1.02]"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-bl from-white/10 to-transparent z-10 pointer-events-none"></div>
+        </div>
+        
+        {/* Mac bottom bezel */}
+        <div className="bg-gray-900 h-5 md:h-6 rounded-b-xl"></div>
+      </div>
+    </div>
+  );
+
+  // iPhone device frame component
+  const IPhoneFrame = ({ image, title }: { image: string; title: string }) => (
+    <div className="relative w-32 md:w-36 mx-auto transform transition-transform duration-500">
+      {/* Shadow effect */}
+      <div className="absolute -bottom-5 inset-x-3 h-6 bg-black/15 blur-lg rounded-full"></div>
+      
+      {/* iPhone frame */}
+      <div className="relative bg-gray-900 rounded-[28px] overflow-hidden border-[8px] border-gray-800 shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
+        {/* Notch */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-14 h-5 bg-black rounded-b-xl z-10">
+          <div className="absolute left-1/2 transform -translate-x-1/2 top-1.5 w-1.5 h-1.5 rounded-full bg-gray-700 flex items-center justify-center">
+            <div className="w-0.5 h-0.5 rounded-full bg-gray-500/80"></div>
+          </div>
+        </div>
+        
+        {/* Speaker */}
+        <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 w-5 h-0.5 bg-gray-700 rounded-full z-10"></div>
+        
+        {/* Screen with inner shadow and reflection */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent z-10 pointer-events-none"></div>
+          <Image 
+            src={image}
+            alt={`${title} mobile view`}
+            width={240}
+            height={500}
+            className="w-full object-cover aspect-[9/19.5] transition-transform duration-500 group-hover:scale-[1.02]"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-bl from-white/5 to-transparent mix-blend-overlay z-10 pointer-events-none"></div>
+        </div>
+        
+        {/* Bottom "home" indicator */}
+        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gray-600 rounded-full z-20"></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-6xl mx-auto">
+      {/* Project Devices Display */}
+      <div className="grid md:grid-cols-7 gap-4 md:gap-6 mb-10">
+        {/* Desktop preview (5 columns) */}
+        <motion.div 
+          className="md:col-span-5 relative self-end px-4 md:px-0"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: isAnimating ? 0 : 1, x: isAnimating ? -20 : 0 }}
+          transition={{ duration: 0.5 }}
+          whileHover={{ y: -5 }}
+        >
+          <MacFrame image={currentProject.image} title={currentProject.title} />
         </motion.div>
 
-        {/* Testimonial Display (2 columns) */}
+        {/* Mobile preview (2 columns) */}
         <motion.div 
-          className="lg:col-span-2"
+          className="md:col-span-2 flex justify-center md:justify-center items-end self-end"
           initial={{ opacity: 1 }}
-          animate={{ opacity: isAnimating ? 0 : 1 }}
+          animate={{ opacity: isAnimating ? 0 : 1, x: isAnimating ? 20 : 0 }}
           transition={{ duration: 0.5 }}
+          whileHover={{ y: -5 }}
         >
-          <div className={`${theme.bg.card} p-6 rounded-xl shadow-md relative h-full flex flex-col justify-center border border-indigo-100 hover:border-indigo-300 transition-colors duration-300 group`}>
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-600 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl" />
-            <div className="absolute top-0 right-0 mt-4 mr-4 text-5xl text-indigo-200 font-serif">&ldquo;</div>
-            <p className={`${theme.text.secondary} mb-8 relative z-10 text-lg italic`}>
-              {currentProject.testimonial.quote}
-            </p>
-            <div className="flex items-center mt-auto">
-              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-lg">
-                {currentProject.testimonial.author.charAt(0)}
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-lg">{currentProject.testimonial.author}</h4>
-                <p className="text-indigo-600">{currentProject.testimonial.business}</p>
-              </div>
-            </div>
-          </div>
+          <IPhoneFrame image={currentProject.image} title={currentProject.title} />
         </motion.div>
       </div>
+      
+      {/* Project Info and Testimonial */}
+      <motion.div 
+        className="mb-12 mt-14 relative"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isAnimating ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Subtle background glow effect */}
+        <div className="absolute -inset-10 bg-gradient-to-tr from-indigo-500/5 via-purple-300/5 to-blue-300/5 rounded-3xl blur-2xl -z-10"></div>
+        
+        <div className="relative max-w-6xl mx-auto px-4 md:px-8">
+          {/* Testimonial quote */}
+          <div className="relative pl-4">
+            <div className="absolute top-0 left-0 text-6xl text-indigo-400 font-serif leading-none opacity-80">&ldquo;</div>
+            <p className={`${theme.text.secondary} pl-8 pr-8 md:pr-12 text-lg md:text-xl italic leading-relaxed max-w-4xl`}>
+              {currentProject.testimonial.quote}
+            </p>
+            <div className="absolute bottom-0 right-0 text-6xl text-indigo-400 font-serif leading-none opacity-80 rotate-180">&rdquo;</div>
+          </div>
+          
+          {/* Author info with enhanced styling */}
+          <div className="flex items-center mt-8 pl-12 relative">
+            <div className="absolute w-48 h-16 -left-4 bg-gradient-to-r from-indigo-100/30 to-transparent rounded-full blur-lg -z-10"></div>
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+              {currentProject.testimonial.author.charAt(0)}
+            </div>
+            <div className="ml-4">
+              <h4 className="font-semibold text-base text-gray-800">{currentProject.testimonial.author}</h4>
+              <p className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-sm font-medium">
+                {currentProject.testimonial.business}
+              </p>
+            </div>
+          </div>
+          
+          {/* Subtle accent element */}
+          <div className="absolute -right-2 -top-2 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/10 rounded-full blur-xl -z-10"></div>
+        </div>
+      </motion.div>
+      
+      {/* Project navigation dots */}
+      <div className="flex justify-center space-x-3 mb-8">
+        {projects.map((_, index) => (
+          <button 
+            key={index} 
+            onClick={() => handleDotClick(index)}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              index === currentIndex ? 'bg-indigo-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+            aria-label={`View project ${index + 1}`}
+          />
+        ))}
+      </div>
 
-      {/* Arrows for manual navigation on larger screens */}
-      <div className="hidden md:flex justify-between mt-8">
+      {/* Arrows for manual navigation */}
+      <div className="flex justify-between mt-0 md:mt-0 max-w-6xl mx-auto px-4">
         <motion.button 
           onClick={() => {
             if (!isAnimating) {
@@ -275,12 +356,12 @@ const ProjectsWithTestimonials = ({ theme }: { theme: ThemeColors }) => {
               }, 500);
             }
           }}
-          className="bg-white rounded-full p-3 shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors"
-          whileHover={{ scale: 1.1 }}
+          className="bg-white rounded-full p-2.5 shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors border border-gray-100"
+          whileHover={{ scale: 1.1, x: -2 }}
           whileTap={{ scale: 0.95 }}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
         </motion.button>
         <motion.button 
@@ -293,12 +374,12 @@ const ProjectsWithTestimonials = ({ theme }: { theme: ThemeColors }) => {
               }, 500);
             }
           }}
-          className="bg-white rounded-full p-3 shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors"
-          whileHover={{ scale: 1.1 }}
+          className="bg-white rounded-full p-2.5 shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors border border-gray-100"
+          whileHover={{ scale: 1.1, x: 2 }}
           whileTap={{ scale: 0.95 }}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </motion.button>
       </div>
